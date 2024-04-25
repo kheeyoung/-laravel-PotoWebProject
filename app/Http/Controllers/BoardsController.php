@@ -58,7 +58,9 @@ class BoardsController extends Controller
      */
     public function show(Board $board)
     {
-        //
+        //글 자세히 보기
+        $board=Board::where('id',$board->id)->first();
+        return view('boards.show')->with('board',$board);
     }
 
     /**
@@ -69,7 +71,9 @@ class BoardsController extends Controller
      */
     public function edit(Board $board)
     {
-        //
+        //글 수정 페이지로 이동
+        $board=Board::where('id',$board->id)->first();
+        return view('boards.edit')->with('board',$board);
     }
 
     /**
@@ -81,7 +85,14 @@ class BoardsController extends Controller
      */
     public function update(Request $request, Board $board)
     {
-        //
+        //글 수정
+        $request->validate([
+            'title'=>'required', 
+            'writer_id'=>'required',
+            'contents'=>'required'
+        ]);
+        $board->update($request->all());
+        return redirect()->route('boards.index');
     }
 
     /**
@@ -92,6 +103,8 @@ class BoardsController extends Controller
      */
     public function destroy(Board $board)
     {
-        //
+        //글 삭제
+        $board->delete();
+        return redirect()->route('boards.index');
     }
 }
