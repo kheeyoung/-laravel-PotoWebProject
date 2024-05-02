@@ -1,4 +1,4 @@
-@extends('boards.layout')
+@extends('layouts.app')
 @section('content')
 
 <h1>글 수정</h1>

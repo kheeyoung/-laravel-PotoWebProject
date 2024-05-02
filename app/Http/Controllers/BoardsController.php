@@ -27,8 +27,7 @@ class BoardsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //create 페이지 출력
+    {              
         return view('boards.create');
     }
 
@@ -40,12 +39,18 @@ class BoardsController extends Controller
      */
     public function store(Request $request)
     {
+        
+        session_start();
         //폼으로 받은 데이터 = request / 입력 받은 값(제목, 내용)을 필수 값으로 지정
         $request->validate([
             'title'=>'required', 
-            'writer_id'=>'required',
             'contents'=>'required'
         ]);
+        $writer_id=auth()->user()->id; //인증으로 부터 사용자의 아이디 가져오기
+
+
+        $request->merge(['writer_id' => $writer_id]); //글쓴이 아이디 받아와서 추가
+        
         Board::create($request->all());
         return redirect()->route('boards.index');
     }
@@ -71,9 +76,19 @@ class BoardsController extends Controller
      */
     public function edit(Board $board)
     {
-        //글 수정 페이지로 이동
-        $board=Board::where('id',$board->id)->first();
-        return view('boards.edit')->with('board',$board);
+        $user_id=auth()->user()->id; //인증으로 부터 사용자의 아이디 가져오기
+        if($board->writer_id==$user_id){ //작성자가 맞으면
+            //글 수정 페이지로 이동
+            $board=Board::where('id',$board->id)->first();
+            return view('boards.edit')->with('board',$board);
+        }
+        else{ //작성자가 아니면 경고창, 이전 페이지로
+            echo "<script>
+            alert(\"수정 권한이 없습니다.\");
+            history.back();
+            </script>";
+        }
+        
     }
 
     /**
@@ -103,8 +118,17 @@ class BoardsController extends Controller
      */
     public function destroy(Board $board)
     {
+        $user_id=auth()->user()->id; //인증으로 부터 사용자의 아이디 가져오기
+        if($board->writer_id==$user_id){ //작성자가 맞으면
         //글 삭제
         $board->delete();
         return redirect()->route('boards.index');
+        }
+        else{ //작성자가 아니면 경고창, 이전 페이지로
+            echo "<script>
+            alert(\"수정 권한이 없습니다.\");
+            history.back();
+            </script>";
+        }
     }
 }

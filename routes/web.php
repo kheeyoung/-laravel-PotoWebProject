@@ -16,5 +16,12 @@ use App\Http\Controllers\BoardsController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::middleware(['CheckLogin'])->group(function(){
+    Route::resources(['boards'=>BoardsController::class,]);
+});
 
-Route::resource('boards',BoardsController::class);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
