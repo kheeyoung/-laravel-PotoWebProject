@@ -22,7 +22,10 @@
         </tr>
         <tr>
             <th>첨부파일</th>
-            <td>{{ $board->imagePath }}</td>
+            <td>@if ($board->imagePath != null)
+                <img src="\storage\images\{{ $board->imagePath }}" class="img-fluid">
+                
+            @endif</td>
         </tr>
         <tr>
             <th>등록일</th>

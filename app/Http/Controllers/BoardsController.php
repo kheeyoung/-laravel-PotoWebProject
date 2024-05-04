@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use Illuminate\Http\Request;
-
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 class BoardsController extends Controller
 {
+    use HasUuids; //uuid
     /**
      * Display a listing of the resource.
      *
@@ -39,7 +42,6 @@ class BoardsController extends Controller
      */
     public function store(Request $request)
     {
-        
         session_start();
         //폼으로 받은 데이터 = request / 입력 받은 값(제목, 내용)을 필수 값으로 지정
         $request->validate([
@@ -47,13 +49,19 @@ class BoardsController extends Controller
             'contents'=>'required'
         ]);
         $writer_id=auth()->user()->id; //인증으로 부터 사용자의 아이디 가져오기
-
-
         $request->merge(['writer_id' => $writer_id]); //글쓴이 아이디 받아와서 추가
-        
-        Board::create($request->all());
+
+        //이미지 처리
+        if($request->has('Path')){ //이미지가 첨부 되어 있을 경우
+            $imagePath=$request->file('Path')->store('images', 'public'); //파일 저장(이름은 랜덤으로 변함)
+            $imagePath=explode('/' , $imagePath);
+            $request->merge(['imagePath' => $imagePath[1]]); //바뀐 이름을 저장(이름만 자르기 위해 문자열 자르기 사용)
+        }
+        Board::create($request->all()); //저장
         return redirect()->route('boards.index');
     }
+    //이미지 파일 저장용
+ 
 
     /**
      * Display the specified resource.

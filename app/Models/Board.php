@@ -9,5 +9,5 @@ class Board extends Model
 {
     use HasFactory;
 
-    protected $fillable=['title','writer_id','contents'];
+    protected $fillable=['title','writer_id','contents','imagePath'];
 }

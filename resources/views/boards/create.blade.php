@@ -5,7 +5,7 @@
 
 <div class="container">
     <h3>글 쓰기</h3></br>
-    <form action="{{ route('boards.store') }}" method="post">
+    <form action="{{ route('boards.store') }}" enctype="multipart/form-data" method="post">
         @csrf <!--form 보안 기능 -->
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
@@ -14,6 +14,9 @@
         <div class="mb-3">
             <label for="contents" class="form-label">내용</label>
             <textarea class="form-control" id="contents" rows="3" name="contents"></textarea>
+        </div>
+        <div class="mb-3">
+        <input type="file" name="Path" id="imageFileOpenInput" accept="image/*">
         </div>
         <button class="btn btn-dark" type="submit">저장</button>
 

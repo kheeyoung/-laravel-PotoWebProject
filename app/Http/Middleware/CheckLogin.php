@@ -18,7 +18,7 @@ class CheckLogin
     public function handle (Request $request, Closure $next)
     {
         if (Auth::guest()) {
-            return redirect()->back();
+            return redirect()->back()->withErrors(['msg' => '로그인을 해주세요!']);;
         }
     
         return $next($request);
