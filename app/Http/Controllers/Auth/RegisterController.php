@@ -66,7 +66,7 @@ class RegisterController extends Controller
         return User::create([
             'id' => $data['id'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => Hash::make($data['password']), //비번 암호화
         ]);
     }
 }
